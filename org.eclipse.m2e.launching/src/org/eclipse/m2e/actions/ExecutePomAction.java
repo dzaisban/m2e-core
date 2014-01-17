@@ -122,7 +122,26 @@ public class ExecutePomAction implements ILaunchShortcut, IExecutableExtension {
             }
           }
         }
-      }
+      } else {
+			Object adapter = Platform.getAdapterManager().getAdapter(
+					object, IProject.class);
+			if (adapter != null) {
+				basedir = (IContainer) adapter;
+			} else {
+				adapter = Platform.getAdapterManager().getAdapter(object,
+						IFolder.class);
+				if (adapter != null) {
+					basedir = (IContainer) adapter;
+				} else {
+					adapter = Platform.getAdapterManager().getAdapter(
+							object, IFile.class);
+					if (adapter != null) {
+						basedir = ((IFile) object).getParent();
+					}
+				}
+			}
+
+		}
 
       launch(basedir, mode);
     }
